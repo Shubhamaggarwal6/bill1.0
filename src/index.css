@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 230 25% 96%;
+    --foreground: 235 45% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 235 45% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 235 45% 12%;
+
+    --primary: 232 80% 30%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 230 20% 92%;
+    --secondary-foreground: 232 80% 30%;
+
+    --muted: 230 15% 94%;
+    --muted-foreground: 230 10% 45%;
+
+    --accent: 37 95% 55%;
+    --accent-foreground: 235 45% 12%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 230 20% 88%;
+    --input: 230 20% 88%;
+    --ring: 232 80% 30%;
+
+    --radius: 0.75rem;
+
+    --success: 142 70% 40%;
+    --success-foreground: 0 0% 100%;
+    --warning: 37 95% 55%;
+    --warning-foreground: 235 45% 12%;
+    --critical: 0 72% 51%;
+    --critical-foreground: 0 0% 100%;
+    --expired: 0 0% 62%;
+    --expired-foreground: 0 0% 100%;
+
+    --sidebar-background: 232 80% 18%;
+    --sidebar-foreground: 230 30% 85%;
+    --sidebar-primary: 37 95% 55%;
+    --sidebar-primary-foreground: 235 45% 12%;
+    --sidebar-accent: 232 60% 25%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 232 60% 25%;
+    --sidebar-ring: 37 95% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    overflow-x: hidden;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-card rounded-xl border shadow-sm;
+  }
+  .stat-card {
+    @apply glass-card p-5 flex flex-col gap-1;
+  }
+  .sidebar-gradient {
+    background: linear-gradient(180deg, hsl(232 80% 18%) 0%, hsl(232 80% 12%) 100%);
+  }
+  .badge-success {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    background: hsl(var(--success) / 0.12);
+    color: hsl(var(--success));
+  }
+  .badge-warning {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    background: hsl(var(--warning) / 0.12);
+    color: hsl(var(--warning));
+  }
+  .badge-critical {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    background: hsl(var(--critical) / 0.12);
+    color: hsl(var(--critical));
+  }
+  .badge-expired {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    background: hsl(var(--expired) / 0.12);
+    color: hsl(var(--expired));
+  }
+}
+
+/* Mobile-specific global styles */
+@media (max-width: 767px) {
+  input, select, textarea {
+    font-size: 16px !important;
+    min-height: 48px;
+  }
+  button {
+    touch-action: manipulation;
+  }
+  .stat-card {
+    @apply !p-3;
+  }
+  /* Full-screen modals on mobile */
+  .mobile-modal {
+    @apply fixed inset-0 z-50 bg-card;
+    border-radius: 0 !important;
+  }
+  .mobile-modal-header {
+    @apply sticky top-0 z-10 bg-primary text-primary-foreground px-4 py-3 flex items-center gap-3;
+    padding-top: max(12px, env(safe-area-inset-top));
+  }
+  .mobile-modal-content {
+    @apply flex-1 overflow-y-auto p-4;
+    -webkit-overflow-scrolling: touch;
+  }
+  .mobile-modal-footer {
+    @apply sticky bottom-0 bg-card border-t p-4 flex gap-2;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+  /* Hide horizontal scrollbar */
+  .overflow-x-auto::-webkit-scrollbar {
+    display: none;
+  }
+  .overflow-x-auto {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
