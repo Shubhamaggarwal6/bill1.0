@@ -208,7 +208,7 @@ export default function PurchaseRegister() {
 
   const saveNewProduct = () => {
     if (!newProductForm.name) return;
-    const newProd = { id: 'p_' + Date.now(), userId, ...newProductForm };
+    const newProd = { id: 'p_' + crypto.randomUUID(), userId, ...newProductForm };
     setProducts(prev => [...prev, newProd]);
     if (pendingRowIndex !== null) {
       updateProductRow(pendingRowIndex, {
@@ -241,7 +241,7 @@ export default function PurchaseRegister() {
       }));
 
     const entry: PurchaseEntry = {
-      id: 'pur_' + Date.now(),
+      id: 'pur_' + crypto.randomUUID(),
       userId,
       ...form,
       products: purchaseProducts.length > 0 ? purchaseProducts : undefined,
@@ -322,7 +322,7 @@ export default function PurchaseRegister() {
             </div>
             <div>
               <label className="text-xs text-muted-foreground">HSN</label>
-              <Input value={row.hsn} onChange={e => updateProductRow(index, { hsn: e.target.value })} readOnly className="bg-muted/30" />
+              <Input value={row.hsn} readOnly className="bg-muted/30" />
             </div>
           </div>
         </div>
