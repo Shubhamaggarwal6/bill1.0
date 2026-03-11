@@ -170,6 +170,16 @@ export interface Payment {
   timestamp: string;
 }
 
+export interface PurchaseProduct {
+  productId: string;
+  productName: string;
+  quantity: number;
+  rate: number;
+  unit: string;
+  hsn: string;
+  gstPercent: number;
+}
+
 export interface PurchaseEntry {
   id: string;
   userId: string;
@@ -183,6 +193,7 @@ export interface PurchaseEntry {
   sgst: number;
   description: string;
   timestamp: string;
+  products?: PurchaseProduct[];
 }
 
 export interface CreditNote {
