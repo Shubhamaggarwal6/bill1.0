@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -434,8 +434,8 @@ export default function PurchaseRegister() {
             </tr></thead>
             <tbody>
               {myPurchases.map(p => (
-                <>
-                  <tr key={p.id} className="border-b hover:bg-muted/30 transition-colors">
+                <React.Fragment key={p.id}>
+                  <tr className="border-b hover:bg-muted/30 transition-colors">
                     <td className="py-2.5 px-3">
                       {p.products && p.products.length > 0 && (
                         <button onClick={() => setExpandedPurchase(expandedPurchase === p.id ? null : p.id)} className="text-muted-foreground hover:text-foreground">
@@ -459,7 +459,7 @@ export default function PurchaseRegister() {
                     </td>
                   </tr>
                   {expandedPurchase === p.id && p.products && p.products.length > 0 && (
-                    <tr key={`${p.id}_expanded`} className="bg-muted/20">
+                    <tr className="bg-muted/20">
                       <td colSpan={11} className="px-8 py-2">
                         <table className="w-full text-xs">
                           <thead><tr className="text-muted-foreground">
@@ -486,7 +486,7 @@ export default function PurchaseRegister() {
                       </td>
                     </tr>
                   )}
-                </>
+                </React.Fragment>
               ))}
               {myPurchases.length > 0 && (
                 <tr className="bg-muted/50 font-semibold">
