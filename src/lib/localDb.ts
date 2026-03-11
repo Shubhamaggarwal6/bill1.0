@@ -162,6 +162,7 @@ export interface LocalPurchase {
   sgst?: number;
   total?: number;
   description?: string;
+  products_json?: string;
   is_deleted?: boolean;
   created_at: string;
   updated_at: string;

@@ -106,18 +106,25 @@ function toLocalPurchase(p: PurchaseEntry): LocalPurchase {
     invoice_date: p.invoiceDate, taxable_amount: p.taxableAmount,
     igst: p.igst, cgst: p.cgst, sgst: p.sgst,
     total: p.taxableAmount + p.igst + p.cgst + p.sgst,
-    description: p.description || '', is_deleted: false,
+    description: p.description || '',
+    products_json: p.products && p.products.length > 0 ? JSON.stringify(p.products) : undefined,
+    is_deleted: false,
     created_at: p.timestamp || nowISO(), updated_at: nowISO(),
   };
 }
 
 function fromLocalPurchase(p: LocalPurchase): PurchaseEntry {
+  let products: import('@/lib/types').PurchaseProduct[] | undefined;
+  if (p.products_json) {
+    try { products = JSON.parse(p.products_json); } catch { products = undefined; }
+  }
   return {
     id: p.id, userId: p.tenant_id, supplierName: p.supplier_name,
     supplierGstin: p.supplier_gst || '', invoiceNumber: p.invoice_number,
     invoiceDate: p.invoice_date, taxableAmount: p.taxable_amount || 0,
     igst: p.igst || 0, cgst: p.cgst || 0, sgst: p.sgst || 0,
     description: p.description || '', timestamp: p.created_at,
+    products,
   };
 }
 
