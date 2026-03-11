@@ -126,7 +126,7 @@ export default function ChatbotInvoice() {
     if ((step === 'select-customer' || step === 'cn-select-customer') && value.trim().length >= 1) {
       const q = value.toLowerCase();
       setSuggestions(myCustomers.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q) || (c.gstNumber && c.gstNumber.toLowerCase().includes(q))).slice(0, 5));
-    } else if ((step === 'add-product' || step === 'cn-search-product') && value.trim().length >= 1) {
+    } else if ((step === 'add-product' || step === 'cn-search-product' || step === 'new-product-name') && value.trim().length >= 1) {
       const q = value.toLowerCase();
       setSuggestions(myProducts.filter(p => p.name.toLowerCase().includes(q) || p.hsn.toLowerCase().includes(q)).slice(0, 5));
     } else if (step === 'cn-select-invoice' && value.trim().length >= 1) {
@@ -324,7 +324,7 @@ export default function ChatbotInvoice() {
       if (cust) selectCustomer(cust);
       return;
     }
-    if (step === 'add-product' || step === 'cn-search-product') {
+    if (step === 'add-product' || step === 'cn-search-product' || step === 'new-product-name') {
       const pName = opt.split(' (₹')[0];
       const p = myProducts.find(pr => pr.name === pName);
       if (p) selectProduct(p);
@@ -415,16 +415,16 @@ export default function ChatbotInvoice() {
         break;
       }
       case 'product-selling-price': {
-        // Allow skipping selling price - go back to product selection
-        if (!text) {
-          setCurrentItem({});
-          addMsg('bot', 'Yeh product skip kar diya. Koi aur product batayein?');
-          setStep('add-product');
-          break;
-        }
         const mrp = currentItem.mrp || 0;
         let sellingPrice = mrp;
-        if (text) { const sp = Number(text); if (isNaN(sp) || sp <= 0) { addMsg('bot', t('chatCorrectPrice')); return; } sellingPrice = sp; }
+        if (!text) {
+          // Skip = use MRP as the selling price
+          setCurrentItem(prev => ({ ...prev, sellingPrice: mrp }));
+          addMsg('bot', `MRP price use kar raha hoon: ₹${mrp}/${currentItem.unit || 'Piece'}\n` + t('chatAskDiscount'));
+          setStep('product-discount');
+          break;
+        }
+        const sp = Number(text); if (isNaN(sp) || sp <= 0) { addMsg('bot', t('chatCorrectPrice')); return; } sellingPrice = sp;
         const discountFromMrp = mrp > 0 && sellingPrice < mrp ? Math.round(((mrp - sellingPrice) / mrp) * 100 * 100) / 100 : 0;
         setCurrentItem(prev => ({ ...prev, sellingPrice }));
         let msg = t('chatSellingPrice', { price: String(sellingPrice), unit: currentItem.unit || 'Piece' });
@@ -966,7 +966,7 @@ export default function ChatbotInvoice() {
       case 'new-customer-address': return t('phAddress');
       case 'vehicle': return t('phVehicle');
       case 'add-product': case 'cn-search-product': return t('phProduct') + ' (Enter = skip)';
-      case 'product-selling-price': return t('phSellingPrice') + ' (Enter = skip product)';
+      case 'product-selling-price': return t('phSellingPrice') + ' (Enter = use MRP price)';
       case 'product-discount': return t('phDiscount') + ' (Enter = 0%)';
       case 'product-quantity': return t('phQty') + ' (Enter = skip product)';
       case 'new-product-name': return t('phProductName');
@@ -1433,7 +1433,7 @@ export default function ChatbotInvoice() {
               </div>
             )}
 
-            {suggestions.length > 0 && (step === 'select-customer' || step === 'add-product' || step === 'cn-select-customer' || step === 'cn-search-product') && (
+            {suggestions.length > 0 && (step === 'select-customer' || step === 'add-product' || step === 'cn-select-customer' || step === 'cn-search-product' || step === 'new-product-name') && (
               <div className="border-t bg-card px-3 py-2 space-y-1 max-h-48 overflow-y-auto">
                 <p className="text-xs text-muted-foreground font-medium mb-1">
                   {(step === 'select-customer' || step === 'cn-select-customer') ? t('customers') + ':' : t('products') + ':'}
@@ -1445,7 +1445,7 @@ export default function ChatbotInvoice() {
                     <span className="text-xs text-muted-foreground">{c.phone}{c.gstNumber ? ` • ${c.gstNumber}` : ''}</span>
                   </button>
                 ))}
-                {(step === 'add-product' || step === 'cn-search-product') && (suggestions as Product[]).map(p => (
+                {(step === 'add-product' || step === 'cn-search-product' || step === 'new-product-name') && (suggestions as Product[]).map(p => (
                   <button key={p.id} onClick={() => selectProduct(p)}
                     className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted transition-colors flex items-center justify-between text-sm">
                     <span className="font-medium text-foreground">{p.name}</span>
